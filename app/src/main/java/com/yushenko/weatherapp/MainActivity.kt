@@ -11,6 +11,7 @@ import androidx.navigation.compose.rememberNavController
 import com.weatherapp.core.AppPreferencesManager
 import com.weatherapp.core.PreferencesManager
 import com.weatherapp.presentation.cities.CitiesScreen
+import com.weatherapp.presentation.forecast.ForecastScreen
 import com.weatherapp.presentation.weather.WeatherScreen
 import com.yushenko.weatherapp.ui.theme.WeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,13 +42,23 @@ fun WeatherApp(preferencesManager: PreferencesManager) {
         composable("weather") {
             WeatherScreen(
                 preferencesManager = preferencesManager,
-                onNavigateToCities = { navController.navigate("cities") }
+                onNavigateToCities = { navController.navigate("cities") },
+                onNavigateToForecast = { navController.navigate("forecast") },
+                onNavigateToFavorites = {},
+                onNavigateToNotifications = {},
+                onNavigateToSettings = {}
             )
         }
         composable("cities") {
             CitiesScreen(
                 preferencesManager = preferencesManager,
-                onCitySelected = { navController.popBackStack() }
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("forecast") {
+            ForecastScreen(
+                preferencesManager = preferencesManager,
+                onBack = { navController.popBackStack() }
             )
         }
     }

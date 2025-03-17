@@ -53,8 +53,9 @@ import kotlinx.coroutines.flow.flowOf
 fun CitiesScreen(
     viewModel: CitiesStateManager = hiltViewModel<CitiesViewModel>(),
     preferencesManager: PreferencesManager,
-    onCitySelected: () -> Unit
+    onBack: () -> Unit
 ) {
+    val backgroundColor = Color(0xff6b9cff)
     val state by viewModel.state.collectAsState()
     val recentCities by preferencesManager.recentCitiesFlow()
         .collectAsState(initial = preferencesManager.getRecentCities())
@@ -80,17 +81,17 @@ fun CitiesScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xff94b8ff))
+            .background(backgroundColor)
             .padding(16.dp)
     ) {
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
-                onClick = { onCitySelected() }
+                onClick = { onBack() }
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
@@ -132,7 +133,7 @@ fun CitiesScreen(
                     CityItem(city = city, onClick = {
                         preferencesManager.setCurrentCity(city.name)
                         preferencesManager.saveCity(city.name)
-                        onCitySelected()
+                        onBack()
                     })
                 }
             }
@@ -151,7 +152,7 @@ fun CitiesScreen(
                 CityItem(city = city, onClick = {
                     preferencesManager.setCurrentCity(city)
                     preferencesManager.saveCity(city)
-                    onCitySelected()
+                    onBack()
                 })
             }
         }
@@ -234,6 +235,6 @@ fun CitiesScreenPreview() {
             override fun setCurrentCity(city: String) {}
             override fun getCurrentCity(): String = "Kyiv"
         },
-        onCitySelected = {}
+        onBack = {}
     )
 }

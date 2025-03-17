@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,7 +24,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Air
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Thermostat
 import androidx.compose.material.icons.filled.WaterDrop
 import androidx.compose.material.icons.filled.WbSunny
@@ -77,8 +82,13 @@ import java.util.Locale
 fun WeatherScreen(
     viewModel: WeatherStateManager = hiltViewModel<WeatherViewModel>(),
     preferencesManager: PreferencesManager,
-    onNavigateToCities: () -> Unit
+    onNavigateToCities: () -> Unit,
+    onNavigateToForecast: () -> Unit,
+    onNavigateToFavorites: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
+    val backgroundColor = Color(0xff6b9cff)
     val state by viewModel.state.collectAsState()
     val currentCity by remember { derivedStateOf { preferencesManager.getCurrentCity() } }
     val context = LocalContext.current
@@ -101,6 +111,7 @@ fun WeatherScreen(
     LaunchedEffect(currentCity) {
         currentCity?.let { viewModel.onIntent(WeatherIntent.LoadWeather(it)) }
     }
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -112,8 +123,25 @@ fun WeatherScreen(
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     Text(
+                        text = "Menu",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+
+                    DrawerItem("Forecast", Icons.Default.CalendarToday, onNavigateToForecast)
+                    DrawerItem("Favorites", Icons.Default.Favorite, onNavigateToFavorites)
+                    DrawerItem(
+                        "Notifications",
+                        Icons.Default.Notifications,
+                        onNavigateToNotifications
+                    )
+                    DrawerItem("Settings", Icons.Default.Settings, onNavigateToSettings)
+
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
                         text = "Units",
-                        fontSize = 24.sp,
+                        fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
@@ -187,7 +215,7 @@ fun WeatherScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xff94b8ff))
+                .background(backgroundColor)
                 .padding(16.dp)
         ) {
             Column(
@@ -196,7 +224,7 @@ fun WeatherScreen(
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -406,6 +434,23 @@ fun WeatherDetailCard(icon: ImageVector, title: String, value: String) {
     }
 }
 
+@Composable
+fun DrawerItem(text: String, icon: ImageVector, onClick: (() -> Unit)?) {
+    if (onClick != null) {
+        Row(
+            modifier = Modifier
+                .clickable { onClick() },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(imageVector = icon, contentDescription = text, tint = Color.Black)
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = text, fontSize = 18.sp, color = Color.Black)
+        }
+    } else {
+        Text(text = text, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.Black)
+    }
+}
+
 fun Long.toTimeString(): String {
     val date = Date(this * 1000)
     val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
@@ -444,6 +489,10 @@ fun WeatherScreenPreview() {
             override fun setCurrentCity(city: String) {}
             override fun getCurrentCity(): String = "London"
         },
-        onNavigateToCities = {}
+        onNavigateToCities = {},
+        onNavigateToForecast = {},
+        onNavigateToFavorites = {},
+        onNavigateToNotifications = {},
+        onNavigateToSettings = {}
     )
 }
