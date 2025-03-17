@@ -31,7 +31,7 @@ data class Sys(
     val sunset: Long
 )
 
-internal fun WeatherResponse.toDomainWeather(): com.weatherapp.domain.model.Weather {
+fun WeatherResponse.toDomainWeather(): com.weatherapp.domain.model.Weather {
     return com.weatherapp.domain.model.Weather(
         cityName = name,
         temperature = main.temp,
