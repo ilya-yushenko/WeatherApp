@@ -2,7 +2,10 @@ package com.weatherapp.presentation.cities
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.weatherapp.domain.usecase.GetCitySuggestionsUseCase
+import com.weatherapp.presentation.widget.WeatherWidgetUpdateWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +25,8 @@ interface CitiesStateManager {
 
 @HiltViewModel
 class CitiesViewModel @Inject constructor(
-    private val getCitySuggestionsUseCase: GetCitySuggestionsUseCase
+    private val getCitySuggestionsUseCase: GetCitySuggestionsUseCase,
+    private val workManager: WorkManager
 ) : ViewModel(), CitiesStateManager {
 
     private val _state = MutableStateFlow(CitiesState())
@@ -34,6 +38,7 @@ class CitiesViewModel @Inject constructor(
     override fun onIntent(intent: CitiesIntent) {
         when (intent) {
             is CitiesIntent.SearchCities -> searchCities(intent.query)
+            is CitiesIntent.UpdateWidget -> updateWidget()
         }
     }
 
@@ -48,5 +53,10 @@ class CitiesViewModel @Inject constructor(
                 _effect.emit(CitiesEffect.ShowError(e.message ?: "Failed to load suggestions"))
             }
         }
+    }
+
+    private fun updateWidget() {
+        val updateRequest = OneTimeWorkRequestBuilder<WeatherWidgetUpdateWorker>().build()
+        workManager.enqueue(updateRequest)
     }
 }

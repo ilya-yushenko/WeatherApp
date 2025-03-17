@@ -6,6 +6,7 @@ android-targetSdk = "35"
 agp = "8.8.0"
 coilCompose = "2.6.0"
 converterGson = "2.9.0"
+glanceAppwidget = "1.1.1"
 hiltWork = "1.2.0"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
@@ -30,6 +31,7 @@ workRuntimeKtx = "2.8.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glanceAppwidget" }
 androidx-hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hiltWork" }
 androidx-hilt-work = { module = "androidx.hilt:hilt-work", version.ref = "hiltWork" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }

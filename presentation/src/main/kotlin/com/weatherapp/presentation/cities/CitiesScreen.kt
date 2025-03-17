@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.weatherapp.core.MockPreferencesManager
 import com.weatherapp.core.PreferencesManager
 import com.weatherapp.domain.model.City
+import com.weatherapp.presentation.weather.WeatherIntent
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -132,6 +133,7 @@ fun CitiesScreen(
                     CityItem(city = city, onClick = {
                         preferencesManager.setCurrentCity(city.name)
                         preferencesManager.saveCity(city.name)
+                        viewModel.onIntent(CitiesIntent.UpdateWidget)
                         onBack()
                     })
                 }
@@ -151,6 +153,7 @@ fun CitiesScreen(
                 CityItem(city = city, onClick = {
                     preferencesManager.setCurrentCity(city)
                     preferencesManager.saveCity(city)
+                    viewModel.onIntent(CitiesIntent.UpdateWidget)
                     onBack()
                 })
             }

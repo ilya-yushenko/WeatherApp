@@ -2,9 +2,7 @@ package com.weatherapp.presentation.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.weatherapp.domain.model.Weather
 import com.weatherapp.domain.usecase.GetWeatherUseCase
-import com.weatherapp.presentation.cities.CitiesEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,7 +22,7 @@ interface WeatherStateManager {
 
 @HiltViewModel
 open class WeatherViewModel @Inject constructor(
-    private val getWeatherUseCase: GetWeatherUseCase
+    private val getWeatherUseCase: GetWeatherUseCase,
 ) : ViewModel(), WeatherStateManager {
     private val _state = MutableStateFlow(WeatherState())
     override val state: StateFlow<WeatherState> = _state.asStateFlow()

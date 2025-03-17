@@ -10,6 +10,7 @@ data class CitiesState(
 
 sealed class CitiesIntent {
     data class SearchCities(val query: String) : CitiesIntent()
+    data object UpdateWidget : CitiesIntent()
 }
 
 sealed class CitiesEffect {

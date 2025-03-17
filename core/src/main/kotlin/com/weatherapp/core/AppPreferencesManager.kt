@@ -1,10 +1,14 @@
 package com.weatherapp.core
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.core.content.edit
+import com.weatherapp.core.model.WidgetWeatherData
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -66,5 +70,37 @@ class AppPreferencesManager @Inject constructor(
 
     override fun getWindThreshold(): Float {
         return prefs.getFloat("wind_threshold", 10f)
+    }
+
+    override fun saveWidgetWeather(weather: WidgetWeatherData, bitmap: Bitmap?) {
+        with(prefs.edit()) {
+            putString("widget_city", weather.cityName)
+            putFloat("widget_temp", weather.temperature)
+            putString("widget_desc", weather.description)
+            putString("widget_icon", weather.icon)
+            bitmap?.let {
+                val stream = ByteArrayOutputStream()
+                it.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                val byteArray = stream.toByteArray()
+                putString("widget_bitmap", android.util.Base64.encodeToString(byteArray, android.util.Base64.DEFAULT))
+            }
+            apply()
+        }
+    }
+
+    override fun getWidgetWeather(): WidgetWeatherData? {
+        val city = prefs.getString("widget_city", null) ?: return null
+        return WidgetWeatherData(
+            cityName = city,
+            temperature = prefs.getFloat("widget_temp", 0f),
+            description = prefs.getString("widget_desc", "Unknown") ?: "Unknown",
+            icon = prefs.getString("widget_icon", "01d") ?: "01d"
+        )
+    }
+
+    override fun getWidgetBitmap(): Bitmap? {
+        val encoded = prefs.getString("widget_bitmap", null) ?: return null
+        val byteArray = android.util.Base64.decode(encoded, android.util.Base64.DEFAULT)
+        return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size)
     }
 }
