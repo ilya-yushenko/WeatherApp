@@ -1,8 +1,10 @@
-package com.weatherapp.presentation
+package com.weatherapp.presentation.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weatherapp.domain.model.Weather
 import com.weatherapp.domain.usecase.GetWeatherUseCase
+import com.weatherapp.presentation.cities.CitiesEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,17 +16,23 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+interface WeatherStateManager {
+    val state: StateFlow<WeatherState>
+    val effect: SharedFlow<WeatherEffect>
+    fun onIntent(intent: WeatherIntent)
+}
+
 @HiltViewModel
-class WeatherViewModel @Inject constructor(
+open class WeatherViewModel @Inject constructor(
     private val getWeatherUseCase: GetWeatherUseCase
-) : ViewModel() {
+) : ViewModel(), WeatherStateManager {
     private val _state = MutableStateFlow(WeatherState())
-    val state: StateFlow<WeatherState> = _state.asStateFlow()
+    override val state: StateFlow<WeatherState> = _state.asStateFlow()
 
     private val _effect = MutableSharedFlow<WeatherEffect>()
-    val effect: SharedFlow<WeatherEffect> = _effect.asSharedFlow()
+    override val effect: SharedFlow<WeatherEffect> = _effect.asSharedFlow()
 
-    fun onIntent(intent: WeatherIntent) {
+    override fun onIntent(intent: WeatherIntent) {
         when (intent) {
             is WeatherIntent.LoadWeather -> loadWeather(intent.city)
         }

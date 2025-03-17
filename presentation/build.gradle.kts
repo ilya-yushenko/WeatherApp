@@ -45,11 +45,15 @@ dependencies {
 
     implementation(libs.androidx.ui)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.hilt.android)
+    debugImplementation(libs.androidx.ui.tooling)
     kapt(libs.hilt.android.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.coil.compose)
+
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
