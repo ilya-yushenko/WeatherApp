@@ -43,7 +43,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -66,13 +65,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.weatherapp.core.MockPreferencesManager
 import com.weatherapp.core.PreferencesManager
 import com.weatherapp.domain.model.Weather
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -157,13 +155,7 @@ fun WeatherScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = isTempInFahrenheit,
-                            onCheckedChange = { isTempInFahrenheit = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = Color(0xFF0288D1),
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color.LightGray
-                            )
+                            onCheckedChange = { isTempInFahrenheit = it }
                         )
                     }
                     Row(
@@ -178,13 +170,7 @@ fun WeatherScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = isWindInKmh,
-                            onCheckedChange = { isWindInKmh = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = Color(0xFF0288D1),
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color.LightGray
-                            ),
+                            onCheckedChange = { isWindInKmh = it }
                         )
                     }
                     Row(
@@ -200,12 +186,6 @@ fun WeatherScreen(
                         Switch(
                             checked = isPressureInMmHg,
                             onCheckedChange = { isPressureInMmHg = it },
-                            colors = SwitchDefaults.colors(
-                                checkedThumbColor = Color.White,
-                                checkedTrackColor = Color(0xFF0288D1),
-                                uncheckedThumbColor = Color.White,
-                                uncheckedTrackColor = Color.LightGray
-                            )
                         )
                     }
                 }
@@ -481,14 +461,7 @@ fun WeatherScreenPreview() {
             override val effect = MutableSharedFlow<WeatherEffect>()
             override fun onIntent(intent: WeatherIntent) {}
         },
-        preferencesManager = object : PreferencesManager {
-            override fun saveCity(city: String) {}
-            override fun getRecentCities(): List<String> = listOf("London", "Paris")
-            override fun recentCitiesFlow(): Flow<List<String>> = flowOf(listOf("London", "Paris"))
-            override fun clearRecentCities() {}
-            override fun setCurrentCity(city: String) {}
-            override fun getCurrentCity(): String = "London"
-        },
+        preferencesManager = MockPreferencesManager(),
         onNavigateToCities = {},
         onNavigateToForecast = {},
         onNavigateToFavorites = {},

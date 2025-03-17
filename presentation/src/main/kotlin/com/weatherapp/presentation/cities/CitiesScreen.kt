@@ -41,13 +41,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.weatherapp.core.MockPreferencesManager
 import com.weatherapp.core.PreferencesManager
 import com.weatherapp.domain.model.City
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 
 @Composable
 fun CitiesScreen(
@@ -95,7 +94,7 @@ fun CitiesScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = "Open settings",
+                    contentDescription = "Back",
                     tint = Color.White
                 )
             }
@@ -225,16 +224,7 @@ fun CitiesScreenPreview() {
             override val effect = MutableSharedFlow<CitiesEffect>()
             override fun onIntent(intent: CitiesIntent) {}
         },
-        preferencesManager = object : PreferencesManager {
-            override fun saveCity(city: String) {}
-            override fun getRecentCities(): List<String> = listOf("Kyiv", "Tokyo", "New York")
-            override fun recentCitiesFlow(): Flow<List<String>> =
-                flowOf(listOf("Kyiv", "Tokyo", "New York"))
-
-            override fun clearRecentCities() {}
-            override fun setCurrentCity(city: String) {}
-            override fun getCurrentCity(): String = "Kyiv"
-        },
+        preferencesManager = MockPreferencesManager(),
         onBack = {}
     )
 }

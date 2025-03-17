@@ -12,7 +12,7 @@ import javax.inject.Singleton
 class AppPreferencesManager @Inject constructor(
     @ApplicationContext context: Context
 ) : PreferencesManager {
-    private val prefs = context.getSharedPreferences(AppConstants.APP_PREFS, Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences(AppConstants.APP_PREFS, Context.MODE_PRIVATE)
     private val _recentCitiesFlow = MutableStateFlow(getRecentCities())
 
     override fun saveCity(city: String) {
@@ -42,5 +42,29 @@ class AppPreferencesManager @Inject constructor(
 
     override fun getCurrentCity(): String? {
         return prefs.getString(AppConstants.APP_PREFS_CURRENT_CITY, null)
+    }
+
+    override fun setRainAlertEnabled(enabled: Boolean) {
+        prefs.edit { putBoolean("rain_alert", enabled) }
+    }
+
+    override fun getRainAlertEnabled(): Boolean {
+        return prefs.getBoolean("rain_alert", false)
+    }
+
+    override fun setWindAlertEnabled(enabled: Boolean) {
+        prefs.edit { putBoolean("wind_alert", enabled) }
+    }
+
+    override fun getWindAlertEnabled(): Boolean {
+        return prefs.getBoolean("wind_alert", false)
+    }
+
+    override fun setWindThreshold(threshold: Float) {
+        prefs.edit { putFloat("wind_threshold", threshold) }
+    }
+
+    override fun getWindThreshold(): Float {
+        return prefs.getFloat("wind_threshold", 10f)
     }
 }

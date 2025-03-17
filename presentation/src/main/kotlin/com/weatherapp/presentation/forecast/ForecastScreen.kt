@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.weatherapp.core.MockPreferencesManager
 import com.weatherapp.core.PreferencesManager
 import com.weatherapp.domain.model.Forecast
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -198,14 +198,7 @@ fun ForecastScreenPreview() {
             override val effect = MutableSharedFlow<ForecastEffect>()
             override fun onIntent(intent: ForecastIntent) {}
         },
-        preferencesManager = object : PreferencesManager {
-            override fun saveCity(city: String) {}
-            override fun getRecentCities(): List<String> = listOf("London")
-            override fun clearRecentCities() {}
-            override fun setCurrentCity(city: String) {}
-            override fun getCurrentCity(): String = "London"
-            override fun recentCitiesFlow(): Flow<List<String>> = MutableStateFlow(listOf("London"))
-        },
+        preferencesManager = MockPreferencesManager(),
         onBack = {}
     )
 }
